@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { createServerSupabaseClient } from "@/lib/supabase/server"
-import { formatPrice } from "@/lib/utils"
+
 import { Badge } from "@/components/ui/Badge"
 import { BuyNowButton } from "./BuyNowButton"
 import { ShareButtons } from "./ShareButtons"
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: product.title,
-    description: product.description ?? `${product.title} — ${formatPrice(product.price)}`,
+    description: product.description ?? product.title,
     openGraph: {
       title: product.title,
       description: product.description ?? undefined,
@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           <p className="text-3xl font-bold text-blue-600">
-            {formatPrice(product.price)}
+            {product.price}
           </p>
 
           {product.description && (

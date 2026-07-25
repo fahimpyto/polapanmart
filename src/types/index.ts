@@ -3,7 +3,7 @@ export interface Product {
   title: string
   slug: string
   description: string | null
-  price: number
+  price: string
   image_url: string | null
   affiliate_link: string
   category_id: string | null

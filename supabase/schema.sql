@@ -15,7 +15,7 @@ CREATE TABLE products (
   title TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
   description TEXT,
-  price DECIMAL(10,2) NOT NULL,
+  price TEXT NOT NULL,
   image_url TEXT,
   affiliate_link TEXT NOT NULL,
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
@@ -90,3 +90,6 @@ INSERT INTO categories (name, slug, sort_order) VALUES ('Electronics', 'electron
 
 -- Migration helper (run if sort_order column is missing):
 -- ALTER TABLE categories ADD COLUMN sort_order INTEGER DEFAULT 1;
+
+-- Migration helper (run if price column is still DECIMAL):
+-- ALTER TABLE products ALTER COLUMN price TYPE TEXT;

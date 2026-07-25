@@ -45,13 +45,34 @@ export default async function HomePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <section className="mb-12 text-center">
+      <section className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           Discover Amazing Products
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Curated deals, updated daily. Find your next favorite thing.
         </p>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="mb-4 text-xl font-semibold">Categories</h2>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/category/all"
+            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+          >
+            All Products
+          </Link>
+          {categories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/category/${cat.slug}`}
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            >
+              {cat.name}
+            </Link>
+          ))}
+        </div>
       </section>
 
       {featured.length > 0 && (
@@ -69,23 +90,6 @@ export default async function HomePage() {
         </div>
         <ProductGrid products={latest} />
       </section>
-
-      {categories.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-xl font-semibold">Categories</h2>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/category/${cat.slug}`}
-                className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   )
 }

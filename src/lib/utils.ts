@@ -4,11 +4,8 @@ export function cn(...inputs: ClassValue[]) {
   return clsx(inputs)
 }
 
-export function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price)
+export function formatPrice(price: string) {
+  return price
 }
 
 export function slugify(text: string) {

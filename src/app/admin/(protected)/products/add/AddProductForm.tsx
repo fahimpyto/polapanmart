@@ -31,14 +31,8 @@ export function AddProductForm({ categories }: AddProductFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!title.trim() || !price || !affiliateLink.trim()) {
+    if (!title.trim() || !price.trim() || !affiliateLink.trim()) {
       toast.error("Title, price, and affiliate link are required")
-      return
-    }
-
-    const priceNum = parseFloat(price)
-    if (isNaN(priceNum) || priceNum <= 0) {
-      toast.error("Please enter a valid price")
       return
     }
 
@@ -50,7 +44,7 @@ export function AddProductForm({ categories }: AddProductFormProps) {
       title: title.trim(),
       slug,
       description: description.trim() || null,
-      price: priceNum,
+      price: price.trim(),
       affiliate_link: affiliateLink.trim(),
       category_id: categoryId || null,
       featured,
@@ -91,13 +85,11 @@ export function AddProductForm({ categories }: AddProductFormProps) {
         <Input
           id="price"
           label="Price"
-          type="number"
-          step="0.01"
-          min="0"
+          type="text"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
-          placeholder="29.99"
+          placeholder="$29 or 120 BDT"
         />
 
         <Select

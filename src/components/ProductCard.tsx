@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="p-3">
         <h3 className="line-clamp-1 text-sm font-medium">{product.title}</h3>
         <p className="mt-1 text-sm font-bold text-blue-600">
-          {formatPrice(product.price)}
+          {product.price}
         </p>
       </div>
     </Link>

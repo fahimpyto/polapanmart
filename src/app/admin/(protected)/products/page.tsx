@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/Button"
 import { Badge } from "@/components/ui/Badge"
-import { formatPrice } from "@/lib/utils"
+
 import Link from "next/link"
 import { Edit, Trash2, Plus } from "lucide-react"
 import type { Product } from "@/types"
@@ -47,7 +47,7 @@ export default async function AdminProductsPage() {
             {products.map((product) => (
               <tr key={product.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
                 <td className="px-4 py-3 font-medium">{product.title}</td>
-                <td className="px-4 py-3">{formatPrice(product.price)}</td>
+                <td className="px-4 py-3">{product.price}</td>
                 <td className="px-4 py-3 text-zinc-500">
                   {product.categories?.name ?? "—"}
                 </td>
