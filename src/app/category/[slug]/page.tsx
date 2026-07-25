@@ -29,8 +29,19 @@ async function getProducts(categoryId: string) {
   return (data ?? []) as Product[]
 }
 
+async function getAllProducts() {
+  const supabase = await createServerSupabaseClient()
+  const { data } = await supabase
+    .from("products")
+    .select("*, categories(*)")
+    .eq("active", true)
+    .order("created_at", { ascending: false })
+  return (data ?? []) as Product[]
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
+  if (slug === "all") return { title: "All Products" }
   const category = await getCategory(slug)
   if (!category) return { title: "Not Found" }
   return { title: category.name }
@@ -38,6 +49,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params
+
+  if (slug === "all") {
+    const products = await getAllProducts()
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        <h1 className="mb-8 text-2xl font-bold">All Products</h1>
+        <ProductGrid products={products} />
+      </div>
+    )
+  }
+
   const category = await getCategory(slug)
   if (!category) notFound()
 

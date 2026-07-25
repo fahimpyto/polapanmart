@@ -5,6 +5,7 @@ CREATE TABLE categories (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
+  sort_order INTEGER DEFAULT 1,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -83,6 +84,9 @@ CREATE POLICY "Admin can manage clicks"
   WITH CHECK (true);
 
 -- Insert a sample category
-INSERT INTO categories (name, slug) VALUES ('Electronics', 'electronics');
-INSERT INTO categories (name, slug) VALUES ('Fashion', 'fashion');
-INSERT INTO categories (name, slug) VALUES ('Home', 'home');
+INSERT INTO categories (name, slug, sort_order) VALUES ('Home', 'home', 1);
+INSERT INTO categories (name, slug, sort_order) VALUES ('Fashion', 'fashion', 2);
+INSERT INTO categories (name, slug, sort_order) VALUES ('Electronics', 'electronics', 3);
+
+-- Migration helper (run if sort_order column is missing):
+-- ALTER TABLE categories ADD COLUMN sort_order INTEGER DEFAULT 1;

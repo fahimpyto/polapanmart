@@ -29,7 +29,7 @@ export default async function AdminDashboardPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Package className="h-5 w-5 text-pink-600" />
+              <Package className="h-5 w-5 text-blue-600" />
               <span className="text-sm font-medium text-zinc-500">
                 Total Products
               </span>

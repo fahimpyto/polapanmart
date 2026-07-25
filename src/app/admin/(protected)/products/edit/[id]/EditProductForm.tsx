@@ -10,23 +10,24 @@ import { Select } from "@/components/ui/Select"
 import { ImageUploader } from "@/components/ImageUploader"
 import { slugify } from "@/lib/utils"
 import { toast } from "sonner"
-import type { Category } from "@/types"
+import type { Product, Category } from "@/types"
 
-interface AddProductFormProps {
+interface EditProductFormProps {
+  product: Product
   categories: Category[]
 }
 
-export function AddProductForm({ categories }: AddProductFormProps) {
+export function EditProductForm({ product, categories }: EditProductFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
-  const [affiliateLink, setAffiliateLink] = useState("")
-  const [categoryId, setCategoryId] = useState("")
-  const [featured, setFeatured] = useState(false)
-  const [imageUrl, setImageUrl] = useState("")
+  const [title, setTitle] = useState(product.title)
+  const [description, setDescription] = useState(product.description ?? "")
+  const [price, setPrice] = useState(String(product.price))
+  const [affiliateLink, setAffiliateLink] = useState(product.affiliate_link)
+  const [categoryId, setCategoryId] = useState(product.category_id ?? "")
+  const [featured, setFeatured] = useState(product.featured)
+  const [imageUrl, setImageUrl] = useState(product.image_url ?? "")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -46,16 +47,20 @@ export function AddProductForm({ categories }: AddProductFormProps) {
     const supabase = createClient()
     const slug = slugify(title)
 
-    const { error } = await supabase.from("products").insert({
-      title: title.trim(),
-      slug,
-      description: description.trim() || null,
-      price: priceNum,
-      affiliate_link: affiliateLink.trim(),
-      category_id: categoryId || null,
-      featured,
-      image_url: imageUrl || null,
-    })
+    const { error } = await supabase
+      .from("products")
+      .update({
+        title: title.trim(),
+        slug,
+        description: description.trim() || null,
+        price: priceNum,
+        affiliate_link: affiliateLink.trim(),
+        category_id: categoryId || null,
+        featured,
+        image_url: imageUrl || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", product.id)
 
     if (error) {
       toast.error(error.message)
@@ -63,7 +68,7 @@ export function AddProductForm({ categories }: AddProductFormProps) {
       return
     }
 
-    toast.success("Product published!")
+    toast.success("Product updated!")
     router.push("/admin/products")
     router.refresh()
   }
@@ -76,7 +81,6 @@ export function AddProductForm({ categories }: AddProductFormProps) {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
-        placeholder="e.g. AirPods Pro"
       />
 
       <Textarea
@@ -84,7 +88,6 @@ export function AddProductForm({ categories }: AddProductFormProps) {
         label="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="Describe the product..."
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -97,7 +100,6 @@ export function AddProductForm({ categories }: AddProductFormProps) {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
-          placeholder="29.99"
         />
 
         <Select
@@ -119,7 +121,6 @@ export function AddProductForm({ categories }: AddProductFormProps) {
         value={affiliateLink}
         onChange={(e) => setAffiliateLink(e.target.value)}
         required
-        placeholder="https://amazon.com/dp/..."
       />
 
       <ImageUploader onUpload={setImageUrl} currentImage={imageUrl} />
@@ -129,14 +130,14 @@ export function AddProductForm({ categories }: AddProductFormProps) {
           type="checkbox"
           checked={featured}
           onChange={(e) => setFeatured(e.target.checked)}
-          className="h-4 w-4 rounded border-zinc-300 text-pink-600 focus:ring-pink-500"
+          className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
         />
         <span className="text-sm font-medium">Featured product</span>
       </label>
 
       <div className="flex gap-3">
         <Button type="submit" className="flex-1" disabled={loading}>
-          {loading ? "Publishing..." : "Publish"}
+          {loading ? "Saving..." : "Save Changes"}
         </Button>
         <Button
           type="button"

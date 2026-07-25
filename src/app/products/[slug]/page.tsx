@@ -77,7 +77,7 @@ export default async function ProductPage({ params }: Props) {
             ))}
           </div>
 
-          <p className="text-3xl font-bold text-pink-600">
+          <p className="text-3xl font-bold text-blue-600">
             {formatPrice(product.price)}
           </p>
 
@@ -90,7 +90,7 @@ export default async function ProductPage({ params }: Props) {
           {product.categories && (
             <Link
               href={`/category/${product.categories.slug}`}
-              className="text-sm text-pink-600 hover:underline"
+              className="text-sm text-blue-600 hover:underline"
             >
               {product.categories.name}
             </Link>

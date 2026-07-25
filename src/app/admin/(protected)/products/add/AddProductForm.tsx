@@ -10,24 +10,23 @@ import { Select } from "@/components/ui/Select"
 import { ImageUploader } from "@/components/ImageUploader"
 import { slugify } from "@/lib/utils"
 import { toast } from "sonner"
-import type { Product, Category } from "@/types"
+import type { Category } from "@/types"
 
-interface EditProductFormProps {
-  product: Product
+interface AddProductFormProps {
   categories: Category[]
 }
 
-export function EditProductForm({ product, categories }: EditProductFormProps) {
+export function AddProductForm({ categories }: AddProductFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  const [title, setTitle] = useState(product.title)
-  const [description, setDescription] = useState(product.description ?? "")
-  const [price, setPrice] = useState(String(product.price))
-  const [affiliateLink, setAffiliateLink] = useState(product.affiliate_link)
-  const [categoryId, setCategoryId] = useState(product.category_id ?? "")
-  const [featured, setFeatured] = useState(product.featured)
-  const [imageUrl, setImageUrl] = useState(product.image_url ?? "")
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [price, setPrice] = useState("")
+  const [affiliateLink, setAffiliateLink] = useState("")
+  const [categoryId, setCategoryId] = useState("")
+  const [featured, setFeatured] = useState(false)
+  const [imageUrl, setImageUrl] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -47,20 +46,16 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
     const supabase = createClient()
     const slug = slugify(title)
 
-    const { error } = await supabase
-      .from("products")
-      .update({
-        title: title.trim(),
-        slug,
-        description: description.trim() || null,
-        price: priceNum,
-        affiliate_link: affiliateLink.trim(),
-        category_id: categoryId || null,
-        featured,
-        image_url: imageUrl || null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", product.id)
+    const { error } = await supabase.from("products").insert({
+      title: title.trim(),
+      slug,
+      description: description.trim() || null,
+      price: priceNum,
+      affiliate_link: affiliateLink.trim(),
+      category_id: categoryId || null,
+      featured,
+      image_url: imageUrl || null,
+    })
 
     if (error) {
       toast.error(error.message)
@@ -68,7 +63,7 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
       return
     }
 
-    toast.success("Product updated!")
+    toast.success("Product published!")
     router.push("/admin/products")
     router.refresh()
   }
@@ -81,6 +76,7 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        placeholder="e.g. AirPods Pro"
       />
 
       <Textarea
@@ -88,6 +84,7 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
         label="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        placeholder="Describe the product..."
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -100,6 +97,7 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
+          placeholder="29.99"
         />
 
         <Select
@@ -121,6 +119,7 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
         value={affiliateLink}
         onChange={(e) => setAffiliateLink(e.target.value)}
         required
+        placeholder="https://amazon.com/dp/..."
       />
 
       <ImageUploader onUpload={setImageUrl} currentImage={imageUrl} />
@@ -130,14 +129,14 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
           type="checkbox"
           checked={featured}
           onChange={(e) => setFeatured(e.target.checked)}
-          className="h-4 w-4 rounded border-zinc-300 text-pink-600 focus:ring-pink-500"
+          className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
         />
         <span className="text-sm font-medium">Featured product</span>
       </label>
 
       <div className="flex gap-3">
         <Button type="submit" className="flex-1" disabled={loading}>
-          {loading ? "Saving..." : "Save Changes"}
+          {loading ? "Publishing..." : "Publish"}
         </Button>
         <Button
           type="button"

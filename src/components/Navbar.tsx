@@ -14,7 +14,7 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-pink-600"
+          className="text-xl font-bold tracking-tight text-blue-600"
         >
           PolapanMart
         </Link>

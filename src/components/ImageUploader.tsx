@@ -73,7 +73,7 @@ export function ImageUploader({ onUpload, currentImage }: ImageUploaderProps) {
           </button>
         </div>
       ) : (
-        <label className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-300 hover:border-pink-500 dark:border-zinc-700 dark:hover:border-pink-500">
+        <label className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-300 hover:border-blue-500 dark:border-zinc-700 dark:hover:border-blue-500">
           {uploading ? (
             <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
           ) : (

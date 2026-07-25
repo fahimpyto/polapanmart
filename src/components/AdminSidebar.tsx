@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Package, Plus, LogOut } from "lucide-react"
+import { LayoutDashboard, Package, Plus, Tags, LogOut } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
@@ -11,6 +11,7 @@ const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/products/add", label: "Add Product", icon: Plus },
+  { href: "/admin/categories", label: "Categories", icon: Tags },
 ]
 
 export function AdminSidebar() {
@@ -28,7 +29,7 @@ export function AdminSidebar() {
       <div className="flex h-16 items-center border-b border-zinc-200 px-6 dark:border-zinc-800">
         <Link
           href="/admin"
-          className="text-lg font-bold text-pink-600"
+          className="text-lg font-bold text-blue-600"
         >
           Admin
         </Link>
@@ -44,7 +45,7 @@ export function AdminSidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 pathname === link.href
-                  ? "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300"
+                  ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                   : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
               )}
             >

@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { AdminSidebar } from "@/components/AdminSidebar"
 
-export default async function AdminLayout({
+export default async function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode

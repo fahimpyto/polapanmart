@@ -29,7 +29,7 @@ export function BuyNowButton({ productId, affiliateLink }: BuyNowButtonProps) {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-pink-600 px-6 text-base font-semibold text-white transition-colors hover:bg-pink-700 disabled:opacity-50"
+      className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 text-base font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
     >
       {loading ? (
         <Loader2 className="h-5 w-5 animate-spin" />
