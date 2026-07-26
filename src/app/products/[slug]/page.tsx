@@ -82,9 +82,9 @@ export default async function ProductPage({ params }: Props) {
           </p>
 
           {product.description && (
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <div className="whitespace-pre-wrap text-zinc-600 dark:text-zinc-400 leading-relaxed">
               {product.description}
-            </p>
+            </div>
           )}
 
           {product.categories && (

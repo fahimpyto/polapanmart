@@ -1,7 +1,10 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/Badge"
+import { ExternalLink, Loader2 } from "lucide-react"
 import type { Product } from "@/types"
 
 interface ProductCardProps {
@@ -9,6 +12,24 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const [loading, setLoading] = useState(false)
+
+  async function handleBuyNow(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setLoading(true)
+    try {
+      await fetch("/api/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: product.id }),
+      })
+    } catch {
+    }
+    window.open(product.affiliate_link, "_blank", "noopener,noreferrer")
+    setLoading(false)
+  }
+
   return (
     <Link
       href={`/products/${product.slug}`}
@@ -37,6 +58,18 @@ export function ProductCard({ product }: ProductCardProps) {
         <p className="mt-1 text-sm font-bold text-blue-600">
           {product.price}
         </p>
+        <button
+          onClick={handleBuyNow}
+          disabled={loading}
+          className="mt-2 inline-flex h-8 w-full items-center justify-center gap-1 rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <ExternalLink className="h-3 w-3" />
+          )}
+          BUY NOW
+        </button>
       </div>
     </Link>
   )
