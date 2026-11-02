@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { ProductGrid } from "@/components/ProductGrid"
 import Link from "next/link"
+import type { Metadata } from "next"
 import type { Product, Category } from "@/types"
 
 async function getFeatured() {
@@ -34,6 +35,31 @@ async function getCategories() {
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true })
   return (data ?? []) as Category[]
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Discover Amazing Products",
+    description:
+      "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices. Shop smart with PolapanMart.",
+    openGraph: {
+      title: "PolapanMart — Best Deals & Products",
+      description:
+        "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices.",
+      type: "website",
+      siteName: "PolapanMart",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "PolapanMart — Best Deals & Products",
+      description:
+        "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices.",
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
 }
 
 export default async function HomePage() {

@@ -41,10 +41,33 @@ async function getAllProducts() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  if (slug === "all") return { title: "All Products" }
+  if (slug === "all")
+    return {
+      title: "All Products",
+      description:
+        "Browse all products on PolapanMart. Curated deals updated daily across electronics, fashion, home goods, and more.",
+      openGraph: {
+        title: "All Products — PolapanMart",
+        description:
+          "Browse all products on PolapanMart. Curated deals updated daily across electronics, fashion, home goods, and more.",
+        type: "website",
+      },
+      robots: { index: true, follow: true },
+    }
+
   const category = await getCategory(slug)
   if (!category) return { title: "Not Found" }
-  return { title: category.name }
+
+  return {
+    title: category.name,
+    description: `Shop ${category.name} on PolapanMart. Curated deals updated daily.`,
+    openGraph: {
+      title: `${category.name} — PolapanMart`,
+      description: `Shop ${category.name} on PolapanMart. Curated deals updated daily.`,
+      type: "website",
+    },
+    robots: { index: true, follow: true },
+  }
 }
 
 export default async function CategoryPage({ params }: Props) {

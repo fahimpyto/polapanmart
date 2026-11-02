@@ -16,12 +16,47 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
+const baseUrl = "https://polapanmart.vercel.app"
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "PolapanMart",
+  url: baseUrl,
+  logo: `${baseUrl}/logo.png`,
+  sameAs: [],
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "",
+    contactType: "customer service",
+    availableLanguage: ["English", "Bengali"],
+  },
+}
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "PolapanMart",
+  url: baseUrl,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${baseUrl}/search?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
+}
+
 export const metadata: Metadata = {
   title: {
     default: "PolapanMart — Best Deals & Products",
     template: "%s — PolapanMart",
   },
   description: "Discover amazing products at great prices. Curated deals updated daily.",
+  other: {
+    "script:ld+json": [JSON.stringify(organizationSchema), JSON.stringify(websiteSchema)],
+  },
 }
 
 export default function RootLayout({

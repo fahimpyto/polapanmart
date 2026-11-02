@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { ProductGrid } from "@/components/ProductGrid"
+import type { Metadata } from "next"
 import type { Product } from "@/types"
 
 interface Props {
@@ -15,6 +16,22 @@ async function searchProducts(query: string) {
     .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
     .order("created_at", { ascending: false })
   return (data ?? []) as Product[]
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { q } = await searchParams
+  const query = q?.trim() ?? ""
+
+  return {
+    title: query ? `Search: ${query}` : "Search",
+    description: query
+      ? `Search results for "${query}" on PolapanMart`
+      : "Search products on PolapanMart",
+    robots: {
+      index: false,
+      follow: true,
+    },
+  }
 }
 
 export default async function SearchPage({ searchParams }: Props) {
