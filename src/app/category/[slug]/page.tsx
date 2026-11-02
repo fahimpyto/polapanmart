@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { ProductGrid } from "@/components/ProductGrid"
+import { Breadcrumbs } from "@/components/Breadcrumbs"
 import type { Metadata } from "next"
 import type { Product, Category } from "@/types"
 
@@ -41,7 +42,10 @@ async function getAllProducts() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  if (slug === "all")
+  const baseUrl = "https://polapanmart.vercel.app"
+
+  if (slug === "all") {
+    const canonicalUrl = `${baseUrl}/category/all`
     return {
       title: "All Products",
       description:
@@ -51,21 +55,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description:
           "Browse all products on PolapanMart. Curated deals updated daily across electronics, fashion, home goods, and more.",
         type: "website",
+        url: canonicalUrl,
       },
+      alternates: { canonical: canonicalUrl },
       robots: { index: true, follow: true },
     }
+  }
 
   const category = await getCategory(slug)
   if (!category) return { title: "Not Found" }
 
+  const canonicalUrl = `${baseUrl}/category/${slug}`
+
   return {
     title: category.name,
-    description: `Shop ${category.name} on PolapanMart. Curated deals updated daily.`,
+    description: `Shop ${category.name} on PolapanMart. Curated deals updated daily. Find the best ${category.name.toLowerCase()} deals.`,
     openGraph: {
       title: `${category.name} — PolapanMart`,
       description: `Shop ${category.name} on PolapanMart. Curated deals updated daily.`,
       type: "website",
+      url: canonicalUrl,
     },
+    alternates: { canonical: canonicalUrl },
     robots: { index: true, follow: true },
   }
 }
@@ -75,9 +86,17 @@ export default async function CategoryPage({ params }: Props) {
 
   if (slug === "all") {
     const products = await getAllProducts()
+    const breadcrumbItems = [
+      { label: "Home", href: "/" },
+      { label: "All Products" },
+    ]
     return (
       <div className="mx-auto max-w-7xl px-4 py-8">
+        <Breadcrumbs items={breadcrumbItems} />
         <h1 className="mb-8 text-2xl font-bold">All Products</h1>
+        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+          Browse all products on PolapanMart. Curated deals updated daily across electronics, fashion, home goods, and more.
+        </p>
         <ProductGrid products={products} />
       </div>
     )
@@ -88,9 +107,19 @@ export default async function CategoryPage({ params }: Props) {
 
   const products = await getProducts(category.id)
 
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "All Products", href: "/category/all" },
+    { label: category.name },
+  ]
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-8 text-2xl font-bold">{category.name}</h1>
+      <Breadcrumbs items={breadcrumbItems} />
+      <h1 className="mb-2 text-2xl font-bold">{category.name}</h1>
+      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        Shop {category.name} on PolapanMart. Curated deals updated daily. Find the best {category.name.toLowerCase()} deals.
+      </p>
       <ProductGrid products={products} />
     </div>
   )

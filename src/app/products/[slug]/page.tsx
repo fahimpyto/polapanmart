@@ -4,6 +4,7 @@ import Link from "next/link"
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 
 import { Badge } from "@/components/ui/Badge"
+import { Breadcrumbs } from "@/components/Breadcrumbs"
 import { BuyNowButton } from "./BuyNowButton"
 import { ShareButtons } from "./ShareButtons"
 import type { Metadata } from "next"
@@ -57,6 +58,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProduct(slug)
   if (!product) return { title: "Not Found" }
 
+  const canonicalUrl = `https://polapanmart.vercel.app/products/${slug}`
+
   return {
     title: product.title,
     description: product.description ?? product.title,
@@ -64,9 +67,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: product.title,
       description: product.description ?? undefined,
       images: product.image_url ? [{ url: product.image_url }] : [],
+      url: canonicalUrl,
     },
     other: {
       "script:ld+json": JSON.stringify(generateProductSchema(product, "https://polapanmart.vercel.app")),
+    },
+    alternates: {
+      canonical: canonicalUrl,
     },
   }
 }
@@ -77,8 +84,15 @@ export default async function ProductPage({ params }: Props) {
 
   if (!product) notFound()
 
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: product.categories?.name ?? "Products", href: product.categories ? `/category/${product.categories.slug}` : "/category/all" },
+    { label: product.title },
+  ]
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
+      <Breadcrumbs items={breadcrumbItems} />
       <div className="grid gap-8 md:grid-cols-2">
         <div className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
           {product.image_url ? (

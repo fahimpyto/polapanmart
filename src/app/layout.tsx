@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { Toaster } from "sonner"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -57,6 +58,13 @@ export const metadata: Metadata = {
   other: {
     "script:ld+json": [JSON.stringify(organizationSchema), JSON.stringify(websiteSchema)],
   },
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  manifest: "/manifest.json",
+  themeColor: "#2563eb",
 }
 
 export default function RootLayout({
@@ -82,6 +90,7 @@ export default function RootLayout({
           <Footer />
           <Toaster richColors closeButton />
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   )

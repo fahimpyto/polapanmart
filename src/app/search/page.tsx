@@ -21,12 +21,16 @@ async function searchProducts(query: string) {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { q } = await searchParams
   const query = q?.trim() ?? ""
+  const canonicalUrl = query
+    ? `https://polapanmart.vercel.app/search?q=${encodeURIComponent(query)}`
+    : "https://polapanmart.vercel.app/search"
 
   return {
     title: query ? `Search: ${query}` : "Search",
     description: query
       ? `Search results for "${query}" on PolapanMart`
       : "Search products on PolapanMart",
+    alternates: { canonical: canonicalUrl },
     robots: {
       index: false,
       follow: true,

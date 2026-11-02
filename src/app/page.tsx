@@ -38,6 +38,7 @@ async function getCategories() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const canonicalUrl = "https://polapanmart.vercel.app"
   return {
     title: "Discover Amazing Products",
     description:
@@ -48,6 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
         "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices.",
       type: "website",
       siteName: "PolapanMart",
+      url: canonicalUrl,
     },
     twitter: {
       card: "summary_large_image",
@@ -55,6 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices.",
     },
+    alternates: { canonical: canonicalUrl },
     robots: {
       index: true,
       follow: true,
