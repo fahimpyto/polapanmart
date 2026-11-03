@@ -97,7 +97,7 @@ export default async function HomePage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold">Featured</h2>
           </div>
-          <ProductGrid products={featured} />
+          <ProductGrid products={featured} priorityCount={4} />
         </section>
       )}
 

@@ -72,6 +72,9 @@ export default async function ProductPage({ params }: Props) {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
+              fetchPriority="high"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
             />
           ) : (
             <div className="flex h-full items-center justify-center text-zinc-400 text-lg">

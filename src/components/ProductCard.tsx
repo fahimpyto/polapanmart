@@ -9,9 +9,10 @@ import type { Product } from "@/types"
 
 interface ProductCardProps {
   product: Product
+  priority?: boolean
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const [loading, setLoading] = useState(false)
 
   async function handleBuyNow(e: React.MouseEvent) {
@@ -43,6 +44,10 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover transition-transform group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={priority}
+            fetchPriority={priority ? "high" : "auto"}
+            placeholder="blur"
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
           />
         ) : (
           <div className="flex h-full items-center justify-center text-zinc-400">

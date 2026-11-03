@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
         hostname: "**.supabase.co",
       },
     ],
+    formats: ["image/avif", "image/webp"],
+  },
+  // Reduce legacy JavaScript by targeting modern browsers
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  // Experimental: optimize CSS
+  experimental: {
+    optimizeCss: true,
   },
 }
 
