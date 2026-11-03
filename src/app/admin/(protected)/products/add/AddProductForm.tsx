@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input"
 import { Textarea } from "@/components/ui/Textarea"
 import { Select } from "@/components/ui/Select"
 import { ImageUploader } from "@/components/ImageUploader"
+import { SEOFields } from "@/components/SEOFields"
 import { slugify } from "@/lib/utils"
 import { toast } from "sonner"
 import type { Category } from "@/types"
@@ -27,6 +28,18 @@ export function AddProductForm({ categories }: AddProductFormProps) {
   const [categoryId, setCategoryId] = useState("")
   const [featured, setFeatured] = useState(false)
   const [imageUrl, setImageUrl] = useState("")
+
+  // SEO fields
+  const [metaTitle, setMetaTitle] = useState("")
+  const [metaDescription, setMetaDescription] = useState("")
+  const [ogTitle, setOgTitle] = useState("")
+  const [ogDescription, setOgDescription] = useState("")
+  const [ogImage, setOgImage] = useState("")
+  const [twitterCard, setTwitterCard] = useState("summary_large_image")
+  const [canonicalOverride, setCanonicalOverride] = useState("")
+  const [noindex, setNoindex] = useState(false)
+  const [nofollow, setNofollow] = useState(false)
+  const [jsonLdCustom, setJsonLdCustom] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -49,6 +62,17 @@ export function AddProductForm({ categories }: AddProductFormProps) {
       category_id: categoryId || null,
       featured,
       image_url: imageUrl || null,
+      // SEO fields
+      meta_title: metaTitle.trim() || null,
+      meta_description: metaDescription.trim() || null,
+      og_title: ogTitle.trim() || null,
+      og_description: ogDescription.trim() || null,
+      og_image: ogImage.trim() || null,
+      twitter_card: twitterCard || "summary_large_image",
+      canonical_override: canonicalOverride.trim() || null,
+      noindex,
+      nofollow,
+      json_ld_custom: jsonLdCustom.trim() ? JSON.parse(jsonLdCustom) : null,
     })
 
     if (error) {
@@ -125,6 +149,8 @@ export function AddProductForm({ categories }: AddProductFormProps) {
         />
         <span className="text-sm font-medium">Featured product</span>
       </label>
+
+      <SEOFields />
 
       <div className="flex gap-3">
         <Button type="submit" className="flex-1" disabled={loading}>

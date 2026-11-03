@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input"
 import { Textarea } from "@/components/ui/Textarea"
 import { Select } from "@/components/ui/Select"
 import { ImageUploader } from "@/components/ImageUploader"
+import { SEOFields } from "@/components/SEOFields"
 import { slugify } from "@/lib/utils"
 import { toast } from "sonner"
 import type { Product, Category } from "@/types"
@@ -28,6 +29,18 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
   const [categoryId, setCategoryId] = useState(product.category_id ?? "")
   const [featured, setFeatured] = useState(product.featured)
   const [imageUrl, setImageUrl] = useState(product.image_url ?? "")
+
+  // SEO fields
+  const [metaTitle, setMetaTitle] = useState(product.meta_title ?? "")
+  const [metaDescription, setMetaDescription] = useState(product.meta_description ?? "")
+  const [ogTitle, setOgTitle] = useState(product.og_title ?? "")
+  const [ogDescription, setOgDescription] = useState(product.og_description ?? "")
+  const [ogImage, setOgImage] = useState(product.og_image ?? "")
+  const [twitterCard, setTwitterCard] = useState(product.twitter_card ?? "summary_large_image")
+  const [canonicalOverride, setCanonicalOverride] = useState(product.canonical_override ?? "")
+  const [noindex, setNoindex] = useState(product.noindex ?? false)
+  const [nofollow, setNofollow] = useState(product.nofollow ?? false)
+  const [jsonLdCustom, setJsonLdCustom] = useState(product.json_ld_custom ? JSON.stringify(product.json_ld_custom, null, 2) : "")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -53,6 +66,17 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
         featured,
         image_url: imageUrl || null,
         updated_at: new Date().toISOString(),
+        // SEO fields
+        meta_title: metaTitle.trim() || null,
+        meta_description: metaDescription.trim() || null,
+        og_title: ogTitle.trim() || null,
+        og_description: ogDescription.trim() || null,
+        og_image: ogImage.trim() || null,
+        twitter_card: twitterCard || "summary_large_image",
+        canonical_override: canonicalOverride.trim() || null,
+        noindex,
+        nofollow,
+        json_ld_custom: jsonLdCustom.trim() ? JSON.parse(jsonLdCustom) : null,
       })
       .eq("id", product.id)
 
@@ -126,6 +150,8 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
         />
         <span className="text-sm font-medium">Featured product</span>
       </label>
+
+      <SEOFields />
 
       <div className="flex gap-3">
         <Button type="submit" className="flex-1" disabled={loading}>

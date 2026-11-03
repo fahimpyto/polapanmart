@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Package, Plus, Tags, LogOut } from "lucide-react"
+import { LayoutDashboard, Package, Plus, Tags, Settings, LogOut } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
@@ -12,6 +12,7 @@ const links = [
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/products/add", label: "Add Product", icon: Plus },
   { href: "/admin/categories", label: "Categories", icon: Tags },
+  { href: "/admin/seo", label: "SEO Settings", icon: Settings },
 ]
 
 export function AdminSidebar() {

@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
+import Link from "next/link"
 import { Badge } from "@/components/ui/Badge"
 import { AddCategoryForm } from "./AddCategoryForm"
 import { DeleteCategoryButton } from "./DeleteCategoryButton"
@@ -43,7 +44,15 @@ export default async function AdminCategoriesPage() {
                 <td className="px-4 py-3 text-zinc-500">{cat.slug}</td>
                 <td className="px-4 py-3">{cat.sort_order}</td>
                 <td className="px-4 py-3 text-right">
-                  <DeleteCategoryButton categoryId={cat.id} name={cat.name} />
+                  <div className="flex items-center justify-end gap-2">
+                    <Link
+                      href={`/admin/categories/edit/${cat.id}`}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                    <DeleteCategoryButton categoryId={cat.id} name={cat.name} />
+                  </div>
                 </td>
               </tr>
             ))}
