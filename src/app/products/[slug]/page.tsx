@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge"
 import { Breadcrumbs } from "@/components/Breadcrumbs"
 import { BuyNowButton } from "./BuyNowButton"
 import { ShareButtons } from "./ShareButtons"
+import { generateProductSEO } from "@/lib/seo/generateMetadata"
 import type { Metadata } from "next"
 import type { Product } from "@/types"
 
@@ -25,57 +26,25 @@ async function getProduct(slug: string) {
   return data as Product | null
 }
 
-function generateProductSchema(product: Product, baseUrl: string) {
-  const price = parseFloat(product.price.replace(/[^0-9.]/g, "")) || 0
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.title,
-    description: product.description ?? product.title,
-    image: product.image_url ? [product.image_url] : [],
-    sku: product.id,
-    offers: {
-      "@type": "Offer",
-      url: `${baseUrl}/products/${product.slug}`,
-      priceCurrency: "BDT",
-      price: price.toFixed(2),
-      availability: "https://schema.org/InStock",
-      seller: {
-        "@type": "Organization",
-        name: "PolapanMart",
-      },
-    },
-    brand: {
-      "@type": "Brand",
-      name: "PolapanMart",
-    },
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const product = await getProduct(slug)
   if (!product) return { title: "Not Found" }
 
-  const canonicalUrl = `https://polapanmart.vercel.app/products/${slug}`
-
-  return {
-    title: product.title,
-    description: product.description ?? product.title,
-    openGraph: {
-      title: product.title,
-      description: product.description ?? undefined,
-      images: product.image_url ? [{ url: product.image_url }] : [],
-      url: canonicalUrl,
-    },
-    other: {
-      "script:ld+json": JSON.stringify(generateProductSchema(product, "https://polapanmart.vercel.app")),
-    },
-    alternates: {
-      canonical: canonicalUrl,
-    },
+  const seoData = {
+    meta_title: product.meta_title,
+    meta_description: product.meta_description,
+    og_title: product.og_title,
+    og_description: product.og_description,
+    og_image: product.og_image,
+    twitter_card: product.twitter_card,
+    canonical_override: product.canonical_override,
+    noindex: product.noindex,
+    nofollow: product.nofollow,
+    json_ld_custom: product.json_ld_custom,
   }
+
+  return generateProductSEO(product, seoData)
 }
 
 export default async function ProductPage({ params }: Props) {

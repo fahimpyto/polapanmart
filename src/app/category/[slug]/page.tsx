@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { ProductGrid } from "@/components/ProductGrid"
 import { Breadcrumbs } from "@/components/Breadcrumbs"
+import { generateCategorySEO } from "@/lib/seo/generateMetadata"
 import type { Metadata } from "next"
 import type { Product, Category } from "@/types"
 
@@ -56,6 +57,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           "Browse all products on PolapanMart. Curated deals updated daily across electronics, fashion, home goods, and more.",
         type: "website",
         url: canonicalUrl,
+        locale: "en_US",
+        siteName: "PolapanMart",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "All Products — PolapanMart",
+        description:
+          "Browse all products on PolapanMart. Curated deals updated daily across electronics, fashion, home goods, and more.",
       },
       alternates: { canonical: canonicalUrl },
       robots: { index: true, follow: true },
@@ -65,20 +74,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = await getCategory(slug)
   if (!category) return { title: "Not Found" }
 
-  const canonicalUrl = `${baseUrl}/category/${slug}`
-
-  return {
-    title: category.name,
-    description: `Shop ${category.name} on PolapanMart. Curated deals updated daily. Find the best ${category.name.toLowerCase()} deals.`,
-    openGraph: {
-      title: `${category.name} — PolapanMart`,
-      description: `Shop ${category.name} on PolapanMart. Curated deals updated daily.`,
-      type: "website",
-      url: canonicalUrl,
-    },
-    alternates: { canonical: canonicalUrl },
-    robots: { index: true, follow: true },
+  const seoData = {
+    meta_title: category.meta_title,
+    meta_description: category.meta_description,
+    og_title: category.og_title,
+    og_description: category.og_description,
+    og_image: category.og_image,
+    canonical_override: category.canonical_override,
+    noindex: category.noindex,
+    nofollow: category.nofollow,
   }
+
+  return generateCategorySEO(category, seoData)
 }
 
 export default async function CategoryPage({ params }: Props) {

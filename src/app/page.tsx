@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { ProductGrid } from "@/components/ProductGrid"
 import Link from "next/link"
+import { generateHomepageSEO } from "@/lib/seo/generateMetadata"
 import type { Metadata } from "next"
 import type { Product, Category } from "@/types"
 
@@ -37,32 +38,19 @@ async function getCategories() {
   return (data ?? []) as Category[]
 }
 
+async function getSiteSEO() {
+  const supabase = await createServerSupabaseClient()
+  const { data } = await supabase
+    .from("site_seo")
+    .select("*")
+    .limit(1)
+    .single()
+  return data
+}
+
 export async function generateMetadata(): Promise<Metadata> {
-  const canonicalUrl = "https://polapanmart.vercel.app"
-  return {
-    title: "Discover Amazing Products",
-    description:
-      "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices. Shop smart with PolapanMart.",
-    openGraph: {
-      title: "PolapanMart — Best Deals & Products",
-      description:
-        "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices.",
-      type: "website",
-      siteName: "PolapanMart",
-      url: canonicalUrl,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "PolapanMart — Best Deals & Products",
-      description:
-        "Curated deals updated daily. Find electronics, fashion, home goods, and more at great prices.",
-    },
-    alternates: { canonical: canonicalUrl },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  }
+  const siteData = await getSiteSEO()
+  return generateHomepageSEO(siteData ?? undefined)
 }
 
 export default async function HomePage() {

@@ -65,6 +65,13 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   themeColor: "#2563eb",
+  verification: {
+    google: "JDDFqH4rL2FuvsQSGsKD9s2LA2PokZHdf2K6sGjIqYk",
+    other: {
+      "msvalidate.01": "EAB04B17341B90952E31740B7781BD47",
+      "p:domain_verify": "bcf5829448d5c0df3beadaf1f7ad62d4",
+    },
+  },
 }
 
 export default function RootLayout({
@@ -78,7 +85,22 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
+      <head>
+        {/* Resource Hints */}
+        <link rel="preconnect" href="https://polapanmart.supabase.co" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body className="min-h-screen flex flex-col antialiased">
+        {/* Skip to main content */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-blue-600 focus:shadow-xl"
+        >
+          Skip to main content
+        </a>
+
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -86,7 +108,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" className="flex-1" tabIndex={-1}>
+            {children}
+          </main>
           <Footer />
           <Toaster richColors closeButton />
         </ThemeProvider>

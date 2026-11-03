@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { ProductGrid } from "@/components/ProductGrid"
+import { generateSearchSEO } from "@/lib/seo/generateMetadata"
 import type { Metadata } from "next"
 import type { Product } from "@/types"
 
@@ -21,21 +22,7 @@ async function searchProducts(query: string) {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { q } = await searchParams
   const query = q?.trim() ?? ""
-  const canonicalUrl = query
-    ? `https://polapanmart.vercel.app/search?q=${encodeURIComponent(query)}`
-    : "https://polapanmart.vercel.app/search"
-
-  return {
-    title: query ? `Search: ${query}` : "Search",
-    description: query
-      ? `Search results for "${query}" on PolapanMart`
-      : "Search products on PolapanMart",
-    alternates: { canonical: canonicalUrl },
-    robots: {
-      index: false,
-      follow: true,
-    },
-  }
+  return generateSearchSEO(query)
 }
 
 export default async function SearchPage({ searchParams }: Props) {
