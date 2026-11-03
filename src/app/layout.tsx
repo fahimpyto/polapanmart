@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   themeColor: "#2563eb",
   verification: {
-    google: "JDDFqH4rL2FuvsQSGsKD9s2LA2PokZHdf2K6sGjIqYk",
+    google: "XjCOOMa4tVyxfk5DXFj-QU9IQ9G5lfwjLWwWOHwS1To",
     other: {
       "msvalidate.01": "EAB04B17341B90952E31740B7781BD47",
       "p:domain_verify": "bcf5829448d5c0df3beadaf1f7ad62d4",
