@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { Input } from "@/components/ui/Input"
 import { Textarea } from "@/components/ui/Textarea"
@@ -15,6 +15,20 @@ interface SEOFieldsProps {
 
 export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_image", defaultValues = {} }: SEOFieldsProps) {
   const [open, setOpen] = useState(false)
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+
+  // Sync React state with native <details> open state
+  useEffect(() => {
+    const details = detailsRef.current
+    if (!details) return
+
+    const handleToggle = () => {
+      setOpen(details.open)
+    }
+
+    details.addEventListener("toggle", handleToggle)
+    return () => details.removeEventListener("toggle", handleToggle)
+  }, [])
 
   const getDefault = (key: string, fallback: string | boolean = "") => {
     const prefixedKey = `${prefix}${key}`
@@ -38,7 +52,7 @@ export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_ima
   ]
 
   return (
-    <details className="group border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+    <details ref={detailsRef} className="group border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
       <summary className="flex items-center justify-between p-4 cursor-pointer list-none bg-zinc-50 dark:bg-zinc-900">
         <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">SEO Settings</h3>
         <div className="flex items-center gap-2 text-zinc-500">
