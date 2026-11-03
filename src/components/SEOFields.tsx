@@ -10,25 +10,31 @@ import { Label } from "@/components/ui/Label"
 interface SEOFieldsProps {
   prefix?: string
   defaultTwitterCard?: string
+  defaultValues?: Record<string, string | boolean>
 }
 
-export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_image" }: SEOFieldsProps) {
+export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_image", defaultValues = {} }: SEOFieldsProps) {
   const [open, setOpen] = useState(false)
 
+  const getDefault = (key: string, fallback: string | boolean = "") => {
+    const prefixedKey = `${prefix}${key}`
+    return defaultValues[prefixedKey] ?? fallback
+  }
+
   const seoFields = [
-    { id: `${prefix}meta_title`, label: "Meta Title", placeholder: "Custom meta title (max 60 chars)", maxLength: 60 },
-    { id: `${prefix}meta_description`, label: "Meta Description", placeholder: "Custom meta description (max 160 chars)", maxLength: 160, textarea: true },
-    { id: `${prefix}og_title`, label: "OpenGraph Title", placeholder: "Custom OG title (falls back to meta title)" },
-    { id: `${prefix}og_description`, label: "OpenGraph Description", placeholder: "Custom OG description (falls back to meta description)", textarea: true },
-    { id: `${prefix}og_image`, label: "OpenGraph Image URL", placeholder: "https://example.com/og-image.jpg", type: "url" },
+    { id: `${prefix}meta_title`, label: "Meta Title", placeholder: "Custom meta title (max 60 chars)", maxLength: 60, defaultValue: getDefault("meta_title") },
+    { id: `${prefix}meta_description`, label: "Meta Description", placeholder: "Custom meta description (max 160 chars)", maxLength: 160, textarea: true, defaultValue: getDefault("meta_description") },
+    { id: `${prefix}og_title`, label: "OpenGraph Title", placeholder: "Custom OG title (falls back to meta title)", defaultValue: getDefault("og_title") },
+    { id: `${prefix}og_description`, label: "OpenGraph Description", placeholder: "Custom OG description (falls back to meta description)", textarea: true, defaultValue: getDefault("og_description") },
+    { id: `${prefix}og_image`, label: "OpenGraph Image URL", placeholder: "https://example.com/og-image.jpg", type: "url", defaultValue: getDefault("og_image") },
     { id: `${prefix}twitter_card`, label: "Twitter Card Type", placeholder: "summary_large_image", select: true, options: [
       { value: "summary_large_image", label: "Summary Large Image" },
       { value: "summary", label: "Summary" },
-    ], defaultValue: defaultTwitterCard },
-    { id: `${prefix}canonical_override`, label: "Canonical URL Override", placeholder: "https://polapanmart.vercel.app/products/...", type: "url" },
-    { id: `${prefix}noindex`, label: "Noindex", type: "checkbox" },
-    { id: `${prefix}nofollow`, label: "Nofollow", type: "checkbox" },
-    { id: `${prefix}json_ld_custom`, label: "Custom JSON-LD (advanced)", placeholder: '{ "@context": "https://schema.org", "@type": "Product", ... }', textarea: true, fullWidth: true },
+    ], defaultValue: getDefault("twitter_card", defaultTwitterCard) },
+    { id: `${prefix}canonical_override`, label: "Canonical URL Override", placeholder: "https://polapanmart.vercel.app/products/...", type: "url", defaultValue: getDefault("canonical_override") },
+    { id: `${prefix}noindex`, label: "Noindex", type: "checkbox", defaultValue: getDefault("noindex", false) },
+    { id: `${prefix}nofollow`, label: "Nofollow", type: "checkbox", defaultValue: getDefault("nofollow", false) },
+    { id: `${prefix}json_ld_custom`, label: "Custom JSON-LD (advanced)", placeholder: '{ "@context": "https://schema.org", "@type": "Product", ... }', textarea: true, fullWidth: true, defaultValue: getDefault("json_ld_custom") },
   ]
 
   return (
@@ -67,12 +73,13 @@ export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_ima
                   maxLength={field.maxLength}
                   className="min-h-[80px] font-mono text-sm"
                   rows={3}
+                  defaultValue={field.defaultValue as string}
                 />
               ) : field.select ? (
                 <Select
                   id={field.id}
                   name={field.id}
-                  defaultValue={field.defaultValue}
+                  defaultValue={field.defaultValue as string}
                   options={field.options!}
                 />
               ) : field.type === "checkbox" ? (
@@ -81,6 +88,7 @@ export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_ima
                     type="checkbox"
                     id={field.id}
                     name={field.id}
+                    defaultChecked={field.defaultValue as boolean}
                     className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
                   />
                   <Label htmlFor={field.id} className="text-sm font-normal cursor-pointer">
@@ -94,6 +102,7 @@ export function SEOFields({ prefix = "", defaultTwitterCard = "summary_large_ima
                   type={field.type || "text"}
                   placeholder={field.placeholder}
                   maxLength={field.maxLength}
+                  defaultValue={field.defaultValue as string}
                 />
               )}
             </div>

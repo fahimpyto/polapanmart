@@ -1,0 +1,14 @@
+# Modern browsers only - drop legacy polyfills
+# https://github.com/browserslist/browserslist#queries
+
+[production]
+> 0.5%
+not dead
+not op_mini all
+supports es6-module
+
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version
+last 1 edge version

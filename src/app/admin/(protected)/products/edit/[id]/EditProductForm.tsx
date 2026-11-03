@@ -2,15 +2,14 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { useActionState } from "react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Textarea } from "@/components/ui/Textarea"
 import { Select } from "@/components/ui/Select"
 import { ImageUploader } from "@/components/ImageUploader"
 import { SEOFields } from "@/components/SEOFields"
-import { slugify } from "@/lib/utils"
-import { toast } from "sonner"
+import { updateProductAction } from "@/actions/products"
 import type { Product, Category } from "@/types"
 
 interface EditProductFormProps {
@@ -20,109 +19,43 @@ interface EditProductFormProps {
 
 export function EditProductForm({ product, categories }: EditProductFormProps) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-
-  const [title, setTitle] = useState(product.title)
-  const [description, setDescription] = useState(product.description ?? "")
-  const [price, setPrice] = useState(String(product.price))
-  const [affiliateLink, setAffiliateLink] = useState(product.affiliate_link)
-  const [categoryId, setCategoryId] = useState(product.category_id ?? "")
-  const [featured, setFeatured] = useState(product.featured)
   const [imageUrl, setImageUrl] = useState(product.image_url ?? "")
-
-  // SEO fields
-  const [metaTitle, setMetaTitle] = useState(product.meta_title ?? "")
-  const [metaDescription, setMetaDescription] = useState(product.meta_description ?? "")
-  const [ogTitle, setOgTitle] = useState(product.og_title ?? "")
-  const [ogDescription, setOgDescription] = useState(product.og_description ?? "")
-  const [ogImage, setOgImage] = useState(product.og_image ?? "")
-  const [twitterCard, setTwitterCard] = useState(product.twitter_card ?? "summary_large_image")
-  const [canonicalOverride, setCanonicalOverride] = useState(product.canonical_override ?? "")
-  const [noindex, setNoindex] = useState(product.noindex ?? false)
-  const [nofollow, setNofollow] = useState(product.nofollow ?? false)
-  const [jsonLdCustom, setJsonLdCustom] = useState(product.json_ld_custom ? JSON.stringify(product.json_ld_custom, null, 2) : "")
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-
-    if (!title.trim() || !price.trim() || !affiliateLink.trim()) {
-      toast.error("Title, price, and affiliate link are required")
-      return
-    }
-
-    setLoading(true)
-    const supabase = createClient()
-    const slug = slugify(title)
-
-    const { error } = await supabase
-      .from("products")
-      .update({
-        title: title.trim(),
-        slug,
-        description: description.trim() || null,
-        price: price.trim(),
-        affiliate_link: affiliateLink.trim(),
-        category_id: categoryId || null,
-        featured,
-        image_url: imageUrl || null,
-        updated_at: new Date().toISOString(),
-        // SEO fields
-        meta_title: metaTitle.trim() || null,
-        meta_description: metaDescription.trim() || null,
-        og_title: ogTitle.trim() || null,
-        og_description: ogDescription.trim() || null,
-        og_image: ogImage.trim() || null,
-        twitter_card: twitterCard || "summary_large_image",
-        canonical_override: canonicalOverride.trim() || null,
-        noindex,
-        nofollow,
-        json_ld_custom: jsonLdCustom.trim() ? JSON.parse(jsonLdCustom) : null,
-      })
-      .eq("id", product.id)
-
-    if (error) {
-      toast.error(error.message)
-      setLoading(false)
-      return
-    }
-
-    toast.success("Product updated!")
-    router.push("/admin/products")
-    router.refresh()
-  }
+  const [featured, setFeatured] = useState(product.featured)
+  const [formState, formAction, isPending] = useActionState(updateProductAction, { error: "" })
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form action={formAction} className="space-y-6">
+      <input type="hidden" name="id" value={product.id} />
       <Input
         id="title"
+        name="title"
         label="Product Name"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        defaultValue={product.title}
         required
       />
 
       <Textarea
         id="description"
+        name="description"
         label="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        defaultValue={product.description ?? ""}
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           id="price"
+          name="price"
           label="Price"
           type="text"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          defaultValue={String(product.price)}
           required
         />
 
         <Select
           id="category"
+          name="category_id"
           label="Category"
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
+          defaultValue={product.category_id ?? ""}
           options={categories.map((c) => ({
             value: c.id,
             label: c.name,
@@ -132,18 +65,21 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
 
       <Input
         id="affiliate_link"
+        name="affiliate_link"
         label="Affiliate Link"
         type="url"
-        value={affiliateLink}
-        onChange={(e) => setAffiliateLink(e.target.value)}
+        defaultValue={product.affiliate_link}
         required
       />
 
       <ImageUploader onUpload={setImageUrl} currentImage={imageUrl} />
 
+      <input type="hidden" name="image_url" value={imageUrl} />
+
       <label className="flex items-center gap-2">
         <input
           type="checkbox"
+          name="featured"
           checked={featured}
           onChange={(e) => setFeatured(e.target.checked)}
           className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
@@ -151,11 +87,28 @@ export function EditProductForm({ product, categories }: EditProductFormProps) {
         <span className="text-sm font-medium">Featured product</span>
       </label>
 
-      <SEOFields />
+      <SEOFields defaultValues={{
+        meta_title: product.meta_title ?? "",
+        meta_description: product.meta_description ?? "",
+        og_title: product.og_title ?? "",
+        og_description: product.og_description ?? "",
+        og_image: product.og_image ?? "",
+        twitter_card: product.twitter_card ?? "summary_large_image",
+        canonical_override: product.canonical_override ?? "",
+        noindex: product.noindex ?? false,
+        nofollow: product.nofollow ?? false,
+        json_ld_custom: product.json_ld_custom ? JSON.stringify(product.json_ld_custom, null, 2) : "",
+      }} />
+
+      {formState.error && (
+        <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+          {formState.error}
+        </div>
+      )}
 
       <div className="flex gap-3">
-        <Button type="submit" className="flex-1" disabled={loading}>
-          {loading ? "Saving..." : "Save Changes"}
+        <Button type="submit" className="flex-1" disabled={isPending}>
+          {isPending ? "Saving..." : "Save Changes"}
         </Button>
         <Button
           type="button"
