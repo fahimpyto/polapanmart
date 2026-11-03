@@ -39,8 +39,15 @@ export function SiteSEOForm({ initialData }: SiteSEOFormProps) {
     ? JSON.stringify(initialData.organization_schema, null, 2)
     : ""
 
+  // Show success toast when save completes
+  if (formState.success) {
+    toast.success("Site SEO settings saved!")
+  }
+
   return (
     <form action={formAction} className="space-y-8 max-w-3xl">
+      {/* Include existing ID so upsert updates the same row */}
+      {initialData?.id && <input type="hidden" name="id" value={initialData.id} />}
       <div>
         <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">Basic Information</h2>
         <div className="space-y-4">
